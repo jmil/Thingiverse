@@ -20,6 +20,11 @@ def done_at(file):
 # FROM http://stackoverflow.com/questions/1191374/subprocess-with-timeout
 import subprocess, threading
 
+errorLog = "errors.log"
+if (os.path.isfile(errorLog) == 0):
+	os.system("touch " + errorLog)
+
+
 class Command(object):
 	def __init__(self, cmd):
 		self.cmd = cmd
@@ -42,7 +47,10 @@ class Command(object):
 			thread.join()
 		print "The Return code is: " + str(self.process.returncode)
 		if (self.process.returncode != 0):
-			print "ERROR: The return code was " + str(self.process.returncode)
+			errorText = "ERROR: The return code was " + str(self.process.returncode)
+			os.system("echo \"" + errorText + "\" >> " + errorLog)
+			print(errorText)
+			
 
 command = Command("echo 'Process started'; sleep 2; echo 'Process finished'")
 command.run(timeout=3)
@@ -52,6 +60,7 @@ command.run(timeout=1)
 for number in range(1,10000):
 	theText = "./thingget_OSX.pl " + str(number)
 	print theText
+	os.system("echo \"" + theText + "\" >> " + errorLog)
 	command = Command(theText)
 	command.run(timeout=1800)
 
