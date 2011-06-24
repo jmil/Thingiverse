@@ -84,3 +84,5 @@ for ($i = 0; $i < @downloads; $i++) {
     print "$dlnames[$i]\n";
     system("curl -L http://www.thingiverse.com/"."$downloads[$i]"." -o "."\"$thingDir\"\/\"$dlnames[$i]\"");
 }
+print "Got all the files, now let's also grab the html source so we have the instructions too.\n";
+system("curl -L http://www.thingiverse.com/thing:$thing -o \"./$thingDir/Thing_$thing.html\"");
