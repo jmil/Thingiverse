@@ -81,5 +81,5 @@ for ($i = 0; $i < @downloads; $i++) {
     $dlnames[$i] =~ s/^\s+//; #remove leading spaces
     $dlnames[$i] =~ s/\s+$//; #remove trailing spaces
     print "$dlnames[$i]\n";
-    system("wget -q http://www.thingiverse.com/"."$downloads[$i]"." -O "."\"$name\"\/\"$dlnames[$i]\"");
+    system("curl -L http://www.thingiverse.com/"."$downloads[$i]"." -o "."\"$name\"\/\"$dlnames[$i]\"");
 }
