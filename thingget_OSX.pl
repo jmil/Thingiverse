@@ -59,11 +59,12 @@ $parser->parse($page);
 
 my $numdl = @downloads;
 
-system("mkdir -p \"$name\"");
+$thingDir = $name . "_" . $thing;
+system("mkdir -p \"$thingDir\"");
 
 print "\n"."$numdl"." downloads found, downloading..."."\n";
 
-open(OUTDATA, ">.\/$name\/$title.webloc");
+open(OUTDATA, ">.\/$thingDir\/$title.webloc");
 print OUTDATA <<"ENDFILE";
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -81,5 +82,5 @@ for ($i = 0; $i < @downloads; $i++) {
     $dlnames[$i] =~ s/^\s+//; #remove leading spaces
     $dlnames[$i] =~ s/\s+$//; #remove trailing spaces
     print "$dlnames[$i]\n";
-    system("curl -L http://www.thingiverse.com/"."$downloads[$i]"." -o "."\"$name\"\/\"$dlnames[$i]\"");
+    system("curl -L http://www.thingiverse.com/"."$downloads[$i]"." -o "."\"$thingDir\"\/\"$dlnames[$i]\"");
 }
