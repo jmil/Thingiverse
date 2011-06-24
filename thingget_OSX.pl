@@ -16,56 +16,61 @@ my ($name) = $title =~ m/(.+) by/si;
 my ($author) = $title =~ m/by (.+) - Thingiverse/si;
 # print $name."\n";
 # print $author;
-print "Attempting to download $name by $author, Thing:$thing";
 
-sub start { 
-    my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
-    if ($tagname eq 'a') {
-        if($attr->{ href } =~ 'download') {
-            if($oddcount == 0) {
-                push(@downloads, $attr->{ href });
-                $oddcount = 1;
-            } else {
-                $oddcount = 0;
-            }
-        }
-    }
-    elsif ($tagname eq 'h3') {
-        if($attr->{class} =~ 'file_info') {
-            $isdl = 1;
-        }
-    }
-    elsif ($tagname eq 'h2') {
-        $ish = 1;
-    }
-    elsif ($tagname eq 'p' && $ish) {
-        $isp = 1;
-    }
-}
+if ($title eq 'Error - Thingiverse') {
+	print "ERROR, NO THING HERE at Thing:$thing. Moving on to the next one...\n";
+} else {
 
-sub text {
-    my ($self, $text) = @_;
+	print "Attempting to download $name by $author, Thing:$thing";
 
-    if ($isdl) {
-         push(@dlnames, $text); 
-         $isdl = 0;
-    }
-}
+	sub start { 
+	    my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
+	    if ($tagname eq 'a') {
+	        if($attr->{ href } =~ 'download') {
+	            if($oddcount == 0) {
+	                push(@downloads, $attr->{ href });
+	                $oddcount = 1;
+	            } else {
+	                $oddcount = 0;
+	            }
+	        }
+	    }
+	    elsif ($tagname eq 'h3') {
+	        if($attr->{class} =~ 'file_info') {
+	            $isdl = 1;
+	        }
+	    }
+	    elsif ($tagname eq 'h2') {
+	        $ish = 1;
+	    }
+	    elsif ($tagname eq 'p' && $ish) {
+	        $isp = 1;
+	    }
+	}
 
-package main;
+	sub text {
+	    my ($self, $text) = @_;
 
-my $parser = MyParser->new;
-$parser->parse($page);
+	    if ($isdl) {
+	         push(@dlnames, $text); 
+	         $isdl = 0;
+	    }
+	}
 
-my $numdl = @downloads;
+	package main;
 
-$thingDir = "$name by $author, Thing $thing";
-system("mkdir -p \"$thingDir\"");
+	my $parser = MyParser->new;
+	$parser->parse($page);
 
-print "\n"."$numdl"." downloads found, downloading..."."\n";
+	my $numdl = @downloads;
 
-open(OUTDATA, ">.\/$thingDir\/$title.webloc");
-print OUTDATA <<"ENDFILE";
+	$thingDir = "$name by $author, Thing $thing";
+	system("mkdir -p \"$thingDir\"");
+
+	print "\n"."$numdl"." downloads found, downloading..."."\n";
+
+	open(OUTDATA, ">.\/$thingDir\/$title.webloc");
+	print OUTDATA <<"ENDFILE";
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -75,14 +80,16 @@ print OUTDATA <<"ENDFILE";
 </dict>
 </plist>
 ENDFILE
- 
-close(OUTDATA);
 
-for ($i = 0; $i < @downloads; $i++) {
-    $dlnames[$i] =~ s/^\s+//; #remove leading spaces
-    $dlnames[$i] =~ s/\s+$//; #remove trailing spaces
-    print "$dlnames[$i]\n";
-    system("curl -L http://www.thingiverse.com/"."$downloads[$i]"." -o "."\"$thingDir\"\/\"$dlnames[$i]\"");
+	close(OUTDATA);
+
+	for ($i = 0; $i < @downloads; $i++) {
+	    $dlnames[$i] =~ s/^\s+//; #remove leading spaces
+	    $dlnames[$i] =~ s/\s+$//; #remove trailing spaces
+	    print "$dlnames[$i]\n";
+	    system("curl -L http://www.thingiverse.com/"."$downloads[$i]"." -o "."\"$thingDir\"\/\"$dlnames[$i]\"");
+	}
+	print "Got all the files, now let's also grab the html source so we have the instructions too.\n";
+	system("curl -L http://www.thingiverse.com/thing:$thing -o \"./$thingDir/Thing_$thing.html\"");
+	
 }
-print "Got all the files, now let's also grab the html source so we have the instructions too.\n";
-system("curl -L http://www.thingiverse.com/thing:$thing -o \"./$thingDir/Thing_$thing.html\"");
