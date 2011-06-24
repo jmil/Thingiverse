@@ -64,7 +64,7 @@ if ($title eq 'Error - Thingiverse') {
 
 	my $numdl = @downloads;
 
-	$thingDir = "$name by $author, Thing $thing";
+	$thingDir = "Thingiverse/Thing $thing, $name by $author";
 	system("mkdir -p \"$thingDir\"");
 
 	print "\n"."$numdl"." downloads found, downloading..."."\n";
