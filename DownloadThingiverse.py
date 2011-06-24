@@ -53,7 +53,7 @@ for number in range(1,10000):
 	theText = "./thingget_OSX.pl " + str(number)
 	print theText
 	command = Command(theText)
-	command.run(timeout=300)
+	command.run(timeout=1800)
 
 
 
