@@ -14,9 +14,9 @@ my @dlnames;
 my ($title) = $page =~ m/<title>(.+)<\/title>/si;
 my ($name) = $title =~ m/(.+) by/si;
 my ($author) = $title =~ m/by (.+) - Thingiverse/si;
-print $name."\n";
-print $author;
-
+# print $name."\n";
+# print $author;
+print "Attempting to download $name by $author, Thing:$thing";
 
 sub start { 
     my ($self, $tagname, $attr, $attrseq, $origtext) = @_;
@@ -59,7 +59,7 @@ $parser->parse($page);
 
 my $numdl = @downloads;
 
-$thingDir = $name . "_" . $thing;
+$thingDir = "$name by $author, Thing $thing";
 system("mkdir -p \"$thingDir\"");
 
 print "\n"."$numdl"." downloads found, downloading..."."\n";
