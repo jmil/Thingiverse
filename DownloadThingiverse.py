@@ -57,6 +57,15 @@ command.run(timeout=3)
 command.run(timeout=1)
 
 
+# DEBUG DOWNLOADS BY USING DIFFICULT NAMED THINGS
+# for number in [2831, 2834, 2913, 2916, 2946, 2948, 6402, 6415, 6421]:
+# 	theText = "./thingget_OSX.pl " + str(number)
+# 	print theText
+# 	os.system("echo \"" + theText + "\" >> " + errorLog)
+# 	command = Command(theText)
+# 	command.run(timeout=1800)
+
+
 for number in range(1,10000):
 	theText = "./thingget_OSX.pl " + str(number)
 	print theText

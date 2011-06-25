@@ -22,9 +22,21 @@ my ($author) = $title =~ m/by (.+) - Thingiverse/si;
 # And: http://forums.devshed.com/perl-programming-6/sanitizing-user-input-367590.html
 use HTML::Entities ();
 # $ok_chars = 'a-zA-Z0-9 ,-';
-$ok_chars = 'a-zA-Z0-9\, &\-\'\?';
+$ok_chars = 'a-zA-Z0-9\, _\*&\-\'\?';
+# print "$name\n";
+$name =~ s/\//_/go;
+$name =~ s/:/_/go;
+$name =~ s/\\/_/go;
+$name =~ s/\"/_/go;
+# print "$name\n";
 $name = HTML::Entities::decode($name);
 $name =~ s/[^$ok_chars]//go;
+# print "$author\n";
+$author =~ s/\//_/go;
+$author =~ s/:/_/go;
+$author =~ s/\\/_/go;
+$author =~ s/\"/_/go;
+# print "$author\n";
 $author = HTML::Entities::decode($author);
 $author =~ s/[^$ok_chars]//go;
 
